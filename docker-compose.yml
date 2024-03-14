@@ -1,0 +1,14 @@
+# docker-compose-deply.yml: 배포용
+# docker-compose.yml: 개발용
+version: "3.11"
+services:
+  app:
+    build:
+      context: . # dockerfile과 dockercompse.yml 동일 폴더상에 위치
+      args:
+        - DEV=true # development or production
+    ports:
+      - "8000:8000" # open 8000 port
+    volumes:
+      - ./app:/app # out of container: in container
+    command: sh -c "python manage.py runserver 0.0.0.0:8000" # sh -c :명령하겠다 -> sh는 ubuntu alpine의 bash 대신 씀 
