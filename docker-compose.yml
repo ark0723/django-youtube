@@ -1,6 +1,6 @@
 # docker-compose-deply.yml: 배포용
 # docker-compose.yml: 개발용
-version: "3.11"
+version: "3.11" # 도커 버전
 services:
   app:
     build:
@@ -11,4 +11,26 @@ services:
       - "8000:8000" # open 8000 port
     volumes:
       - ./app:/app # out of container: in container
-    command: sh -c "python manage.py runserver 0.0.0.0:8000" # sh -c :명령하겠다 -> sh는 ubuntu alpine의 bash 대신 씀 
+    command: >
+      sh -c 'python manage.py wait_for_db &&
+             python manage.py migrate &&
+            python manage.py runserver 0.0.0.0:8000' 
+    # sh -c :명령하겠다 -> sh는 ubuntu alpine의 bash 대신 씀 
+    environment: # 장고가 db를 알아야지 접근 가능 -> .env 로 저장할것, commit 하지 않는다
+      - DB_HOST=db
+      - DB_NAME=youtube
+      - DB_USER=ark0723
+      - DB_PASS=kr14021428
+    depends_on:
+      - db # db먼저 컨테이너 띄운 후, app을 띄운다
+  # postgre 쓴 이유? MVCC지원 -> Architecture 비교  내 서비스는 뭐가 더 중요한가? 읽기? 쓰기?
+  db:
+    image: postgres:16-alpine
+    volumes: # 데이터 저장공간(./data/db) => 마운트 => /va/lib/postgresql/data, 컨테이너가 제거되어도 데이터가 보존된다. 왜? 호스트 환경에 저장했으므로
+      - ./data/db:/var/lib/postgresql/data
+    environment: 
+      - POSTGRES_DB=youtube
+      - POSTGRES_USER=ark0723
+      - POSTGRES_PASSWORD=kr14021428
+    
+    
