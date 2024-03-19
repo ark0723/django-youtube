@@ -41,6 +41,9 @@ DJANGO_SYSTEM_APPS = [
 
 CUSTOM_USER_APPS = [
     'users.apps.UsersConfig',
+    'rest_framework',
+    'drf_spectacular',
+
 ]
 
 INSTALLED_APPS = CUSTOM_USER_APPS + DJANGO_SYSTEM_APPS
@@ -134,3 +137,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Django의 custom usermodel - 기존 장고의 유저 인증 기능을 가져온다.
 AUTH_USER_MODEL = 'users.User'
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS':'drf_spectacular.openapi.AutoSchema'
+}
