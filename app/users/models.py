@@ -31,7 +31,7 @@ class User(AbstractBaseUser,  PermissionsMixin):
     # CharField -> Varchar(255)
     email = models.CharField(max_length = 255, unique = True)
     nickname = models.CharField(max_length = 255)
-    is_bussiness = models.BooleanField(default = False)
+    is_business = models.BooleanField(default = False)
 
     # distinguish SuperUser and GeneralUser : PermissionMixin (manage access autority) 
     is_active = models.BooleanField(default = True)

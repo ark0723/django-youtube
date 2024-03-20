@@ -1,5 +1,5 @@
 from django.db import models
-from common import CommonModel
+from common.models import CommonModel
 from users.models import User
 
 class Video(CommonModel):
@@ -8,8 +8,7 @@ class Video(CommonModel):
     description = models.TextField(blank=True)
     category = models.CharField(max_length=50)
     views_count = models.PositiveIntegerField(default=0)
-    thumbnail = models.URLField()
+    thumbnail = models.URLField() # 이미지는 s3 bucket저장 -> url받아서 db에 저장
     video_uploaded_url = models.URLField()
-    video_file = models.FileField(upload_to='videos/')
+    video_file = models.FileField(upload_to='storage/') # 파일을 저장하는 방법
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-# Create your models here.
