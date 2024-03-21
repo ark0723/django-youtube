@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from .models import Video
-from .serializers import VideoSerializer
+from .serializers import VideoListSerializer, VideoDetailSerializer
 from rest_framework.response import Response
 from rest_framework import status
 # VideoList
@@ -17,13 +17,13 @@ class VideoList(APIView):
         videos = Video.objects.all()
         
         # 시리얼라이저 : object -> json
-        serializer = VideoSerializer(videos, many = True)
+        serializer = VideoListSerializer(videos, many = True)
 
         return Response(serializer.data, status = status.HTTP_200_OK)
         
     def post(self, request):
         data = request.data # json
-        serializer = VideoSerializer(data = data) # json -> object
+        serializer = VideoListSerializer(data = data) # json -> object
 
         if serializer.is_valid(): # 유효한 데이터면
             serializer.save(user = request.user) # 데이터를 db에 저장(저장하는 사람이 누구인지: user = request.user)
@@ -44,14 +44,14 @@ class VideoDetail(APIView):
         except Video.DoesNotExist:
             raise NotFound
         
-        serializer = VideoSerializer(video) # obj -> json
+        serializer = VideoDetailSerializer(video) # obj -> json
         return Response(serializer.data) 
 
     def put(self, request, pk):
         video = Video.objects.get(pk = pk) # db에서 불러온 데이터
         user_data = request.data # 유저가 보낸 데이터
 
-        serializer = VideoSerializer(video, user_data) # video데이터를 user_data로 변경
+        serializer = VideoDetailSerializer(video, user_data) # video데이터를 user_data로 변경
         
         serializer.is_valid(raise_exception = True)
         serializer.save() # DB에 업데이트 적용 # is_valid()함수를 먼저 실행해야 save()함수가 실행됨

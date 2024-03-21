@@ -19,7 +19,7 @@ COPY ./app /app
 WORKDIR /app
 EXPOSE 8000
 
-ARG DEV=true
+ARG DEV=false
 
 # 컨테이너에 가상환경 venv 생성 : enter - && \
 # fi : if문이 끝났다는 것을 알려줌

@@ -44,6 +44,8 @@ CUSTOM_USER_APPS = [
     'rest_framework',
     'drf_spectacular',
     'videos.apps.VideosConfig',
+    'comments.apps.CommentsConfig',
+    'subscriptions.apps.SubscriptionsConfig',
 
 ]
 
