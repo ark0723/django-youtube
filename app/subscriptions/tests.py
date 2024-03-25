@@ -7,13 +7,11 @@ from .models import Subscription
 
 # todo: 내가 구독하고 있는 유투버 리스트 추가
 # [GET] : pk = 나 자신, pk입력받을 필요 없음
-# 대댓글
+# 대댓글: comment와 comment와의 관계를 본다. comment(parent, child
+# paenrt = mocdl.ForeignKey('self', on_delete = models.CACADE, null = True, bank  =True))
 
 class SubscriptionTestCase(APITestCase):
-    def get():
-        # todo: 내가 구독하고 있는 유투버 리스트 추가
-        # [GET] : pk = 나 자신, pk입력받을 필요 없음
-        pass 
+
     def setUp(self):
         #테스트 코드 실행전 가장 먼저 실행됨
         # 데이터 생성
@@ -22,6 +20,17 @@ class SubscriptionTestCase(APITestCase):
         self.user2 = User.objects.create_user(email = 'test2@gmail.com', password = 'pw123')
         # 한명 유저 로그인
         self.client.login(email = 'test1@gmail.com', password = 'pw123')
+
+    def test_sub_list_get(self):
+        # user1(현재 나)이 user2를 구독
+        Subscription.objects.create(subscriber = self.user1, subscribed_to = self.user2)
+        
+        url = reverse('sub-list')
+        res = self.client.get(url)
+        
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertTrue(len(res.data) > 0)
+        self.assertEqual(res.data[0]['subscribed_to'], self.user2.id)
 
     def test_sub_list_post(self):
         # 구독하기 테스트

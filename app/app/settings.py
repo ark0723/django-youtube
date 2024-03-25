@@ -46,8 +46,23 @@ CUSTOM_USER_APPS = [
     'videos.apps.VideosConfig',
     'comments.apps.CommentsConfig',
     'subscriptions.apps.SubscriptionsConfig',
+    'reactions.apps.ReactionsConfig',
+    'channels',
+    'chat.apps.ChatConfig',
 
 ]
+
+# channel 사용위한 설정
+ASGI_APPLICATION = 'app.route.application' # socket (비동기처리() + HTTP (동기처리)
+WSGI_APPLICATION = 'app.wsgi.application' #HTTP base -REST API (동기처리)
+
+# FAST - API : 동기/비동기 모두 가능
+# 동기와 비동기
+# 스벅: 직원 1명 (동기) -> 녹차프라프치노 만들어야 -> 그 다음 내 차레
+# 직원이 2명 이상 (비동기) -> 아아먼저 나올수도 (순서가 보장되지 않음): cpu(멀티스레드) -> 여러프로그램을 동시에 띄우는게 가능
+# SOCKET - ws://, hand shake 양방향 통신이 가능해짐, Low Overhaed, Frame(웹소켓에서 데이터를 나누는 단위)
+# streaming - 영상, 음성 어떻게 보내지? TCP/UDP, 3 ways handshake
+
 
 INSTALLED_APPS = CUSTOM_USER_APPS + DJANGO_SYSTEM_APPS
 
@@ -79,7 +94,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'app.wsgi.application'
+
 
 
 # Database
@@ -143,4 +158,10 @@ AUTH_USER_MODEL = 'users.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS':'drf_spectacular.openapi.AutoSchema'
+}
+
+CHANNEL_LAYERS = {
+    "default":{
+        "BACKEND":"channels.layers.InMemoryChannelLayer"
+    }
 }

@@ -9,6 +9,12 @@ from .serializers import SubSerializer
 # post: 구독하기
 
 class SubscriptionList(APIView):
+    def get(self, request):
+        # 내가(로그인한 사용자) 구독하고 있는 유투버 리스트
+        subs = Subscription.objects.filter(subscriber = request.user)
+        serializer = SubSerializer(subs, many = True)
+        return Response(serializer.data)
+
     def post(self, request):
         # 유저가  보내는 데이터(json)
         user_data = request.data
