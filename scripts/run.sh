@@ -1,10 +1,12 @@
 #!/bin/sh
-# 오류가 발생하면 알려줘 :set -e
-set -e 
+set -e
 
-python manage.py wait_for_db
-python manage.py collectstatic --noinput
-python manage.py migrate
+# 'app' 서비스가 시작되기를 기다립니다.
+until nc -z $APP_HOST $APP_PORT; do
+    echo "Waiting for the 'app' service..."
+    sleep 1
+done
 
-# uWSGI: Nginx로부터 데이터를 받아오면 Django랑 소통을 하는 역활
-uwsgi --socket :9000 --workers 4 --master --enable-threads --module app.wsgi
+echo "'app' service is up - executing command"
+envsubst < /etc/nginx/default.conf.tpl > /etc/nginx/conf.d/default.conf
+nginx -g 'daemon off;'
