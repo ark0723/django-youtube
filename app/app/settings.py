@@ -20,12 +20,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-te&g_=21!5hk)_ga#xzxsdm3r#!e653s#bgib!x%rtfz-c8*n9'
+# SECRET_KEY = 'django-insecure-te&g_=21!5hk)_ga#xzxsdm3r#!e653s#bgib!x%rtfz-c8*n9'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'u2NvK8HoPX')
+
+
+# JWT 사용이유: 일반 token은 서버에 저장 -> 서버 부하가 생김, jwt는 시크릿키만 갖고 있으면 해독가능하고, 서버에 저장되지 않음
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(int(os.environ.get('DEBUG', 0)))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ec2-3-35-193-76.ap-northeast-2.compute.amazonaws.com', '3.35.193.76']
 
 
 # Application definitionㄴ
@@ -40,6 +44,7 @@ DJANGO_SYSTEM_APPS = [
 ]
 
 CUSTOM_USER_APPS = [
+    'daphne', # 제일 상단에 있어야
     'users.apps.UsersConfig',
     'rest_framework',
     'drf_spectacular',
